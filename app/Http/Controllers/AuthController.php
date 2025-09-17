@@ -29,7 +29,7 @@ class AuthController extends Controller
         return $this->success([
             'user' => $user,
             'token' => $user->createToken('API token of '.$user->name)->plainTextToken,
-        ], 'User has logged in succesffully', 200);
+        ], 'User has logged in successfully', 200);
     }
 
     public function register(StoreUserRequest $request)
@@ -45,11 +45,17 @@ class AuthController extends Controller
         return $this->success([
             'user' => $user,
             'token' => $user->createToken('API token of '.$user->name)->plainTextToken,
-        ], 'User has been created succesffully', 201);
+        ], 'User has been created successfully', 201);
     }
 
     public function logout()
     {
-        return response()->json('This is the logout method from AuthController');
+        $user = Auth::user();
+
+        $user->tokens()
+            ->where('id', $user->currentAccessToken()?->id)
+            ->delete();
+
+        return $this->success('', 'User has logged out successfully');
     }
 }
