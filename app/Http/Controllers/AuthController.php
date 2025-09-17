@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Models\User;
 use App\Traits\HtttpResponses;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -13,9 +16,20 @@ class AuthController extends Controller
         return 'This is the login method from AuthController';
     }
 
-    public function register()
+    public function register(StoreUserRequest $request)
     {
-        return response()->json('This is the register method from AuthController');
+        $validated = $request->validated();
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return $this->success([
+            'user' => $user,
+            'token' => $user->createToken('API token of'.$user->name)->plainTextToken,
+        ]);
     }
 
     public function logout()
