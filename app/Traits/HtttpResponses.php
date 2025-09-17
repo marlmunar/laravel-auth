@@ -16,7 +16,7 @@ trait HtttpResponses
     protected function error($data, $message, $code)
     {
         return response()->json([
-            'status' => 'Error has occured',
+            'status' => 'Request failed',
             'message' => $message,
             'data' => $data,
         ], $code);
