@@ -18,9 +18,11 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TaskResource::collection(
-            Task::where('user_id', Auth::user()->id)->get()
-        );
+        $perPage = request()->query('per_page', 10);
+
+        $tasks = Task::paginate($perPage)->appends(request()->query());
+
+        return TaskResource::collection($tasks);
     }
 
     // /**
